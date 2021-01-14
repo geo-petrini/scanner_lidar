@@ -1,0 +1,11 @@
+scanner lidar cavi:
+	- black = GND
+	- red = 5V
+	- green = recezione
+	- white = trasmissione
+	
+	
+arduino to c# serial:
+https://www.instructables.com/C-Serial-Communication-With-Arduino/
+Scanner lidar:
+https://create.arduino.cc/projecthub/TravisLedo/arduino-lidar-scanning-java-rendering-6b2124

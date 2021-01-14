@@ -1,0 +1,23 @@
+HW:
+	- scansione a 360° sull'asse orrizzontale.
+	- scansione a 90° sull'asse verticale.
+	- minor delay possibile tra presa dati lidar e giro dei motori.
+	- invio dati al pc:
+		~ angolo orrizzontale.
+		~ angolo verticale.
+		~ distanza rilevata.
+SW:
+	- acquisire dati dalla scansione (USB).
+	- interpretare i dati in ambiente 3D.
+	- single OS.
+	- l'applicativo deve essere un eseguibile.
+	- utilizzo del linguaggio.
+
+Punti Tecnici:	
+	- Req. 187: Compilare correttamente la lista del materiale.
+	- Req. 114: Utilizzo diagramma di flusso.
+	- Req. 224: Registro eventi/Logging.
+	- Req. 211: Aspetti meccanici, elettrici e termici.
+	- Req. 119: Utilità (applicazione).
+	- Req. 166: Stile di codifica; Leggibilità del codice.
+	- Req. 164: Codifica: Gestione degli errori.

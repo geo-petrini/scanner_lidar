@@ -1,0 +1,3 @@
+Domade:
+	- per muovere i motori, utilizziamo arduino o qualche libreria? (Cere)
+	- c'è un vincolo per il passaggio di dati tra arduino e macchina?
