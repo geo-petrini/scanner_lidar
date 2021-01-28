@@ -12,7 +12,7 @@
 |12:30 - 12:40 |Use case                      |Isaac          |
 |12:30 - 14:30 |Schema classi arduino         |Daniele        |
 |12:30 - 15:45 |Setup ambiente di sviluppo    |Veljko         |
-|12:30 - 15:25 |Logger                        |Matteo         |
+|12:30 - 15:45 |Logger                        |Matteo         |
 |14:30 - 15.45 |Inizio Schema elettrico       |Daniele, Isaac | 
 
 ##  Problemi riscontrati e soluzioni adottate
