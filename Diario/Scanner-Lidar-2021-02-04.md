@@ -42,4 +42,4 @@ Soluzione da gradi a step del motore --> Abbiamo trovato una proporzione, ma con
 Siamo in pari alla pianificazione
 
 ## Programma di massima per la prossima giornata di lavoro
-Rimuovere le ombre dai pallini, riuscire ad ottenere i punti da renderizzare e renderizzarli
+Rimuovere le ombre dai pallini, riuscire ad ottenere i punti da renderizzare e renderizzarli, gestione motori e formula, rifare la struttura hardware
