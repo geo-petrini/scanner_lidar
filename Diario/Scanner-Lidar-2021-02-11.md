@@ -47,7 +47,7 @@ Soluzione Unity & compilazione --> Abbiamo installato la DLL di System.IO.Ports 
 Soluzione rapporto rotazioni --> Invece di utilizzare un calcolo per determinare il rapporto l’abbiamo imposto con valore 5.625 * 1.0, che è il rapporto tra una rivoluzione completa del motore stepper e i passi necessari per compierla.
 
 ##  Punto della situazione rispetto alla pianificazione
-Siamo in pari alla pianificazione
+Siamo in anticipo rispetto al Gantt preventivo, però abbiamo riscontrato diversi problemi che ci hanno rallentati, ma stiamo comunque procedendo bene.
 
 ## Programma di massima per la prossima giornata di lavoro
-Avere il server funzionante, avere lo script per le richieste al server, rendering dei punti avendo i dati ricevuti dal server. Iniziare a lavorare sulla configurazione dello scanner LIDAR stesso
+Avere il server funzionante, avere lo script per le richieste al server, rendering dei punti avendo i dati ricevuti dal server. Completamento dell'annotazione delle dimensioni dei componenti e iniziare a lavorare sulla configurazione dello scanner LIDAR stesso.
