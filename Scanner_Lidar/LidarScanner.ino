@@ -1,4 +1,7 @@
 #include <Stepper.h>
+#include "TFmini.h"
+
+TFmini tfmini;
  
 const int stepsPerRevolution = 64 ;
 Stepper myStepperX(stepsPerRevolution, 11,9,10,8);
@@ -18,7 +21,10 @@ int stepY = ratio * degreesY;
 boolean finish = false;
 
 void setup() {
-  Serial.begin(9600);
+  //Serial.begin(9600);
+  Serial.begin(115200);
+  Serial1.begin(TFmini::DEFAULT_BAUDRATE);
+  tfmini.attach(Serial1);
   myStepperX.setSpeed(300);
   myStepperY.setSpeed(300);
 }
@@ -27,14 +33,26 @@ void loop() {
   if(!finish){
     intervalX = 0;
     while(intervalX * degreesX <= 360 + degreesX){
-      Serial.println(intervalX * degreesX);
+      //Serial.println(intervalX * degreesX);
       if(clockwise){
         myStepperX.step(stepX);
         
       }else{
         myStepperX.step(-stepX);
       }
+
+      delay(10);
+      
+      if (tfmini.available())
+        {
+          Serial.print("distance : ");
+          Serial.println(tfmini.getDistance());
+        }else{
+          Serial.println("Scanner unavailable ");
+        }
+        
       intervalX++;
+      
     }
   
     myStepperY.step(stepY);
@@ -46,15 +64,6 @@ void loop() {
       finish = true;
     }
   }else{
-    delay(1);
+    delay(10);
   }
-  
-
-
-
-  
-
-  
-
- 
 }
