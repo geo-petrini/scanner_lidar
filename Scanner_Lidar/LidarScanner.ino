@@ -19,7 +19,7 @@ int stepX = ratio * degreesX; // Il numero di gradi eseguiti dal Stepper Motor d
 int stepY = ratio * degreesY; // Il numero di gradi eseguiti dal Stepper Motor dell'asse Y, per step, seguendo il rapporto associato al motore relativo.
 
 boolean finish = false; // Lo stato che stabilisce il termine di una scansione (true = scansione terminata; false = scansione non terminata)
-
+bool send = false;
 void setup() {
   
   // Settaggio seriale Arduino - PC; Arduino - TFMini.
@@ -33,59 +33,66 @@ void setup() {
 }
  
 void loop() {
+  if(send){
+      if(!finish){
   
-  if(!finish){
-
-    // Esecuzione delle rotazioni dei motori ed estrapolazione delle distanze prese dal LIDAR.
-
-
-    intervalX = 1; // Inizializzazione del numero di rotazione (comincia con 1 rotazione prevista)
-    
-    // Esecuzione delle rotazione sull'asse X finché il numero di rotazione utilizzato permetterebbe allo step fatto di eccedere 360° gradi.
-    while(intervalX * degreesX <= 360){
-      // Se lo stato del verso dello Stepper Motor stabilisce che è orario, gli step sono incrementali, altrimenti decrementali.
-      if(clockwise){
-        myStepperX.step(stepX);
-        
-      }else{
-        myStepperX.step(-stepX);
-      }
-
-      delay(100); // Un periodo di sicurezza tra rotazione e ricavo distanza.
+      // Esecuzione delle rotazioni dei motori ed estrapolazione delle distanze prese dal LIDAR.
+  
+  
+      intervalX = 1; // Inizializzazione del numero di rotazione (comincia con 1 rotazione prevista)
       
-      // Controlla se lo scanner LIDAR esiste ed è accessibile; in seguito viene presa la distanza identificata dallo scanner.
-      if (tfmini.available())
-        {
-          //sendJson(tfmini.getDistance());
-          Serial.print(intervalX * degreesX);
-          Serial.print(",");
-          Serial.print(intervalY * degreesY);
-          Serial.print(",");
-          Serial.print(tfmini.getDistance());
+      // Esecuzione delle rotazione sull'asse X finché il numero di rotazione utilizzato permetterebbe allo step fatto di eccedere 360° gradi.
+      while(intervalX * degreesX <= 360){
+        // Se lo stato del verso dello Stepper Motor stabilisce che è orario, gli step sono incrementali, altrimenti decrementali.
+        if(clockwise){
+          myStepperX.step(stepX);
+          
+        }else{
+          myStepperX.step(-stepX);
         }
-        
-      intervalX++; // Incremento numero rotazione orizzontale attuale.
-      
-    }
   
-
-    // Dopo aver completato un giro 360° sull'asse X, viene fatto uno step da parte dello Stepper Motor dell'asse Y,
-    // incrementa il numero di rotazione verticale attuale, inverte il verso dello Stepper Motor dell'asse X.
-    myStepperY.step(stepY);
-    intervalY++;
-    clockwise = !clockwise;
+        delay(100); // Un periodo di sicurezza tra rotazione e ricavo distanza.
+        
+        // Controlla se lo scanner LIDAR esiste ed è accessibile; in seguito viene presa la distanza identificata dallo scanner.
+        if (tfmini.available())
+          {
+            //sendJson(tfmini.getDistance());
+            Serial.print(intervalX * degreesX);
+            Serial.print(",");
+            Serial.print(intervalY * degreesY);
+            Serial.print(",");
+            Serial.print(tfmini.getDistance());
+          }
+          
+        intervalX++; // Incremento numero rotazione orizzontale attuale.
+        
+      }
     
-
-    // Se il nuovo numero di rotazione causa l'eccesso dei 90° da parte del prossimo step,
-    // viene fatto il reset del Step Motor dell'asse Y 
-    // e viene settato lo stato della scansione come terminata.
-
-    if(intervalY * degreesY > 90){
-      myStepperY.step(-stepY * intervalY);
-      finish = true;
+  
+      // Dopo aver completato un giro 360° sull'asse X, viene fatto uno step da parte dello Stepper Motor dell'asse Y,
+      // incrementa il numero di rotazione verticale attuale, inverte il verso dello Stepper Motor dell'asse X.
+      myStepperY.step(stepY);
+      intervalY++;
+      clockwise = !clockwise;
+      
+  
+      // Se il nuovo numero di rotazione causa l'eccesso dei 90° da parte del prossimo step,
+      // viene fatto il reset del Step Motor dell'asse Y 
+      // e viene settato lo stato della scansione come terminata.
+  
+      if(intervalY * degreesY > 90){
+        myStepperY.step(-stepY * intervalY);
+        finish = true;
+      }
+    }else{
+      delay(10);
     }
   }else{
-    delay(10);
+    if(Serial.readString() == "OK"){
+      send = true;
+    }else{
+      Serial.write("CIAO");
+    }
   }
 }
 
