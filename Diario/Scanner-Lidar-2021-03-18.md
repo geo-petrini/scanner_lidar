@@ -7,7 +7,7 @@
 |Orario        |Lavoro svolto                                               |Persone         |
 |--------------|------------------------------------------------------------|----------------|
 |08:20 - 12:50 |Lettura dei punti e rendering di quest'ultimi               |Veljko          |
-|08:20 - 15:30 |Bug fix, gestione trasporto dat Arduino --> Client          |Matteo          |
+|08:20 - 15:30 |Bug fix, gestione trasporto dati Arduino --> Client          |Matteo          |
 |08:20 - 09:50 |Osservazione e discussione della struttura HW attuale       |Isaac & Daniele |
 |09:50 - 11:35 |Sostegno codifica lato server                               |Isaac & Daniele |
 |12.30 - 14:00 |Demo progetto complessivo                                   |Tutti           |
