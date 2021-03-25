@@ -19,8 +19,8 @@ public class CameraController : MonoBehaviour
         rotation = transform.eulerAngles;
 
         //Setto i valori delle velocità
-        rotationSpeed = 2.0f;
-        movementSpeed = 15.0f;
+        rotationSpeed = 4.0f;
+        movementSpeed = 40.0f;
     }
 
     void Update()

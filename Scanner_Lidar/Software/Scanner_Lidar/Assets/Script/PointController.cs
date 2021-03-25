@@ -18,17 +18,20 @@ public class PointController : MonoBehaviour
     public void Render(string point)
     {
         string[] temp = point.Split(',');
-        int[] data = new int[3] {int.Parse(temp[0]), int.Parse(temp[1]), int.Parse(temp[2]) };
+        //int[] data = {int.Parse(temp[0]), int.Parse(temp[1]), int.Parse(temp[2]) };
+        float[] data = { float.Parse(temp[0]), float.Parse(temp[2]), float.Parse(temp[1]) };
         CreatePoint(data);
     }
 
     // Crea un punto
-    private void CreatePoint(int[] data)
+    private void CreatePoint(float[] data)
     {
         GameObject point = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         point.GetComponent<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         point.GetComponent<MeshRenderer>().receiveShadows = false;
-        point.transform.position = new Vector3(data[0], data[1], data[2]);
+        Vector3 temp = new Vector3(data[0], data[1], data[2]);
+        Debug.Log(temp.ToString());
+        point.transform.position = temp;
         points.Add(point);
     }
 
