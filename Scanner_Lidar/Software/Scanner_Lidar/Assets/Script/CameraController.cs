@@ -4,64 +4,86 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    // Porizioni della camera
-    private Vector3 position;
+    // Rotazione della camera
     private Vector3 rotation;
 
     // Velocità di rotazione della camera
-    public float rotationSpeed = 0.00000000000000000000000003f;
+    public float rotationSpeed;
 
     // Velocità di movimento della camera
-    private float movementSpeed = 0.5f;
+    private float movementSpeed;
 
     void Start()
     {
         // Salvo la posizione iniziale della camera
-        position = transform.position;
         rotation = transform.eulerAngles;
+
+        //Setto i valori delle velocità
+        rotationSpeed = 2.0f;
+        movementSpeed = 15.0f;
     }
 
     void Update()
     {
+        // Se il pulsante premuto è LeftShift, il movimento della camera sarà dimezzato
+        if(Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            movementSpeed /= 2;
+        }
+
+        // Se il pulsante premuto è LeftShift, il movimento della camera tornerà normale
+        if (Input.GetKeyUp(KeyCode.LeftShift))
+        {
+            movementSpeed *= 2;
+        }
+
         // Se il pulsante premuto è W, la camera si muove avanti
         if (Input.GetKey(KeyCode.W))
         {
-            position.z += movementSpeed;
-            transform.position = position;
+            transform.position += transform.forward * movementSpeed * Time.deltaTime;
         }
 
         // Se il pulsante premuto è S, la camera si muove indietro
         if (Input.GetKey(KeyCode.S))
         {
-            position.z -= movementSpeed;
-            transform.position = position;
+            transform.position -= transform.forward * movementSpeed * Time.deltaTime;
         }
 
         // Se il pulsante premuto è A, la camera si muove a sinistra
         if (Input.GetKey(KeyCode.A))
         {
-            position.x -= movementSpeed;
-            transform.position = position;
+            transform.position -= transform.right * movementSpeed * Time.deltaTime;
         }
 
         // Se il pulsante premuto è D, la camera si muove a destra
         if (Input.GetKey(KeyCode.D))
         {
-            position.x += movementSpeed;
-            transform.position = position;
+            transform.position += transform.right * movementSpeed * Time.deltaTime;
         }
 
-        //Se il pulsante premuto è RightArrow, la camera ruota verso sinistra
-        if(Input.GetKey(KeyCode.LeftArrow))
+        // Se il pulsante premuto è Space, la camera salirà in alto
+        if (Input.GetKey(KeyCode.Space))
         {
-            rotation.y -= rotationSpeed;
-            transform.eulerAngles = rotation;
+            transform.position += new Vector3(0, transform.up.y * movementSpeed * Time.deltaTime, 0);
         }
 
-        //Se il pulsante premuto è LeftArrow, la camera ruota verso destra
+        // Se il pulsante premuto è LeftControl, la camera scenderà in basso
+        if (Input.GetKey(KeyCode.LeftControl))
+        {
+            transform.position -= new Vector3(0, transform.up.y * movementSpeed * Time.deltaTime, 0);
+        }
+
+        //Se il pulsante premuto è RightArrow, la camera ruota verso destra
         if (Input.GetKey(KeyCode.RightArrow))
         {
             rotation.y += rotationSpeed;
+            transform.eulerAngles = rotation;
+        }
+
+        //Se il pulsante premuto è LeftArrow, la camera ruota verso sinistra
+        if (Input.GetKey(KeyCode.LeftArrow))
+        {
+            rotation.y -= rotationSpeed;
             transform.eulerAngles = rotation;
         }
 

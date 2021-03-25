@@ -65,13 +65,13 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 2986}
     - Class: 114
-      Script: {instanceID: 3018}
+      Script: {instanceID: 3016}
     - Class: 114
-      Script: {instanceID: 3086}
+      Script: {instanceID: 3084}
     - Class: 114
-      Script: {instanceID: 3334}
+      Script: {instanceID: 3332}
     - Class: 114
-      Script: {instanceID: 3468}
+      Script: {instanceID: 3466}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -538,4 +538,4 @@ ScriptsOnlyBuild:
   platform: 19
   scenePathNames:
   - Assets/Scenes/LidarScene.unity
-  playerPath: C:/Users/Scanner Lidar/Desktop/Scanner_Lidar/Build/Scanner_Lidar.exe
+  playerPath: C:/Users/Scanner Lidar/Desktop/Repository/scanner_lidar/Scanner_Lidar/Software/Scanner_Lidar/Build/Scanner_Lidar.exe
