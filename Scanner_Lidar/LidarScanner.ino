@@ -1,6 +1,7 @@
 // Inclusione delle librerie necessarie per operare i Stepper Motor e lo scanner LIDAR.
 #include <Stepper.h>
 #include "TFmini.h"
+#include <ArduinoJson.h>
 
 const int stepsPerRevolution = 64 ;  // Il numero di step che i Stepper Motor eseguono per compiere una rivoluzione completa.
 Stepper myStepperX(stepsPerRevolution, 11,9,10,8); // Definizione dello Stepper Motor orizzontale utilizzato dal programma.
@@ -55,9 +56,12 @@ void loop() {
       // Controlla se lo scanner LIDAR esiste ed è accessibile; in seguito viene presa la distanza identificata dallo scanner.
       if (tfmini.available())
         {
-          Serial.println(tfmini.getDistance());
-        }else{
-          Serial.println("Scanner unavailable ");
+          //sendJson(tfmini.getDistance());
+          Serial.print(intervalX * degreesX);
+          Serial.print(",");
+          Serial.print(intervalY * degreesY);
+          Serial.print(",");
+          Serial.print(tfmini.getDistance());
         }
         
       intervalX++; // Incremento numero rotazione orizzontale attuale.
@@ -83,4 +87,15 @@ void loop() {
   }else{
     delay(10);
   }
+}
+
+
+//Uso con JSON (opzionale)
+void sendJson(int dist) {
+  DynamicJsonDocument data(200);
+  data["point"]["x"] = intervalX * degreesX;
+  data["point"]["y"]   = intervalY * degreesY;
+  data["point"]["distance"] = dist;
+  
+  serializeJson(data, Serial);
 }
