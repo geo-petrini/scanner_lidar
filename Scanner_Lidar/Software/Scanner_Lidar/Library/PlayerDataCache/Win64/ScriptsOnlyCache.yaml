@@ -4,6 +4,7 @@ ScriptsOnlyBuild:
     - CameraController
     - PointController
     - TCPClient
+    - WorldAxis
     Unity.CollabProxy.Editor.dll:
     - Unity.Cloud.Collaborate.UserInterface.CollaborateWindow
     - Unity.Cloud.Collaborate.UserInterface.WindowCache
@@ -32,17 +33,9 @@ ScriptsOnlyBuild:
       Script: {instanceID: 0}
     - Class: 21
       Script: {instanceID: 0}
-    - Class: 23
-      Script: {instanceID: 0}
     - Class: 28
       Script: {instanceID: 0}
-    - Class: 33
-      Script: {instanceID: 0}
-    - Class: 43
-      Script: {instanceID: 0}
     - Class: 48
-      Script: {instanceID: 0}
-    - Class: 65
       Script: {instanceID: 0}
     - Class: 81
       Script: {instanceID: 0}
@@ -72,6 +65,8 @@ ScriptsOnlyBuild:
       Script: {instanceID: 3332}
     - Class: 114
       Script: {instanceID: 3466}
+    - Class: 114
+      Script: {instanceID: 16630}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -405,7 +400,7 @@ ScriptsOnlyBuild:
     className: TMP_SubMeshUI
   - hash:
       serializedVersion: 2
-      Hash: 3f7d3eac3468685ef18425a40cd5b891
+      Hash: e3f935e2f33baa3c8cfe7fc51054cd0e
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: CameraController
@@ -535,6 +530,12 @@ ScriptsOnlyBuild:
     assemblyName: Unity.TextMeshPro.dll
     namespaceName: TMPro
     className: TextContainer
+  - hash:
+      serializedVersion: 2
+      Hash: 8be5a58aa651153197d52d97ad38ed13
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: WorldAxis
   platform: 19
   scenePathNames:
   - Assets/Scenes/LidarScene.unity

@@ -29,7 +29,7 @@ public class PointController : MonoBehaviour
         GameObject point = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         point.GetComponent<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         point.GetComponent<MeshRenderer>().receiveShadows = false;
-        Vector3 temp = new Vector3(data[0], data[1], data[2]);
+        Vector3 temp = new Vector3(data[0], -data[1], data[2]);
         Debug.Log(temp.ToString());
         point.transform.position = temp;
         points.Add(point);

@@ -59,6 +59,7 @@
     <Compile Include="Assets\Script\PointController.cs" />
     <Compile Include="Assets\Script\CameraController.cs" />
     <Compile Include="Assets\Script\TCPClient.cs" />
+    <Compile Include="Assets\Script\WorldAxis.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
