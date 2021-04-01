@@ -64,7 +64,7 @@ void loop() {
             myStepperX.step(-stepX);
             if (tfmini.available()){
                 //sendJson(tfmini.getDistance());
-                Serial.print(intervalX * degreesX);
+                Serial.print(degreesX / 2 + intervalX * degreesX); //  Inoltro dato con sfasemento corrispettivo.
                 Serial.print(",");
                 Serial.print(intervalY * degreesY);
                 Serial.print(",");
@@ -75,7 +75,6 @@ void loop() {
           myStepperX.step(-ratio*(degreesX/2)); // Mezzo step per ri-allineamento per righe dispari sull'asse orizzontale
         }
     
-  
       // Dopo aver completato un giro 360° sull'asse X, viene fatto uno step da parte dello Stepper Motor dell'asse Y,
       // incrementa il numero di rotazione verticale attuale, inverte il verso dello Stepper Motor dell'asse X.
       myStepperY.step(stepY);
