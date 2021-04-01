@@ -18,7 +18,7 @@ int intervalY = 0; // Il numero di rotazione attuale dello Stepper Motor dell'as
 int stepX = ratio * degreesX; // Il numero di gradi eseguiti dal Stepper Motor dell'asse X, per step, seguendo il rapporto associato al motore relativo.
 int stepY = ratio * degreesY; // Il numero di gradi eseguiti dal Stepper Motor dell'asse Y, per step, seguendo il rapporto associato al motore relativo.
 
-boolean finish = false; // Lo stato che stabilisce il termine di una scansione (true = scansione terminata; false = scansione non terminata)
+bool finish = false; // Lo stato che stabilisce il termine di una scansione (true = scansione terminata; false = scansione non terminata)
 bool send = false;
 void setup() {
   
@@ -39,34 +39,41 @@ void loop() {
       // Esecuzione delle rotazioni dei motori ed estrapolazione delle distanze prese dal LIDAR.
   
   
-      intervalX = 1; // Inizializzazione del numero di rotazione (comincia con 1 rotazione prevista)
+      intervalX = 0; // Inizializzazione del numero di rotazione.
       
-      // Esecuzione delle rotazione sull'asse X finché il numero di rotazione utilizzato permetterebbe allo step fatto di eccedere 360° gradi.
-      while(intervalX * degreesX <= 360){
-        // Se lo stato del verso dello Stepper Motor stabilisce che è orario, gli step sono incrementali, altrimenti decrementali.
-        if(clockwise){
-          myStepperX.step(stepX);
-          
-        }else{
-          myStepperX.step(-stepX);
-        }
-  
-        delay(100); // Un periodo di sicurezza tra rotazione e ricavo distanza.
-        
-        // Controlla se lo scanner LIDAR esiste ed è accessibile; in seguito viene presa la distanza identificata dallo scanner.
-        if (tfmini.available())
-          {
-            //sendJson(tfmini.getDistance());
-            Serial.print(intervalX * degreesX);
-            Serial.print(",");
-            Serial.print(intervalY * degreesY);
-            Serial.print(",");
-            Serial.print(tfmini.getDistance());
+      // Se lo stato del verso dello Stepper Motor stabilisce che è orario, gli step sono incrementali, altrimenti decrementali.
+      if(clockwise){
+          // Esecuzione delle rotazione sull'asse X finché il numero di rotazione utilizzato permetterebbe allo step fatto di eccedere 360° gradi.
+          while(intervalX * degreesX <= 360 + degreesX){
+            myStepperX.step(stepX);
+            // Controlla se lo scanner LIDAR esiste ed è accessibile; 
+            // in seguito vengono inoltrati gli angoli di rotazioni sugli assi, e la distanza ricavata dallo scanner.
+            if (tfmini.available()){
+                //sendJson(tfmini.getDistance());
+                Serial.print(intervalX * degreesX);
+                Serial.print(",");
+                Serial.print(intervalY * degreesY);
+                Serial.print(",");
+                Serial.print(tfmini.getDistance());
+            }
+            intervalX++; // Incremento numero rotazione orizzontale attuale.
           }
-          
-        intervalX++; // Incremento numero rotazione orizzontale attuale.
-        
-      }
+        }else{
+          myStepperX.step(-ratio*(degreesX/2)); // Mezzo step per sfasare righe pari sull'asse orizziontale.
+          while(intervalX * degreesX <= 360){ //  Deve terminare una rotazione prima.
+            myStepperX.step(-stepX);
+            if (tfmini.available()){
+                //sendJson(tfmini.getDistance());
+                Serial.print(intervalX * degreesX);
+                Serial.print(",");
+                Serial.print(intervalY * degreesY);
+                Serial.print(",");
+                Serial.print(tfmini.getDistance());
+            }
+            intervalX++;
+          }
+          myStepperX.step(-ratio*(degreesX/2)); // Mezzo step per ri-allineamento per righe dispari sull'asse orizzontale
+        }
     
   
       // Dopo aver completato un giro 360° sull'asse X, viene fatto uno step da parte dello Stepper Motor dell'asse Y,
