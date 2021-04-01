@@ -83,11 +83,12 @@ void loop() {
       
   
       // Se il nuovo numero di rotazione causa l'eccesso dei 90° da parte del prossimo step,
-      // viene fatto il reset del Step Motor dell'asse Y 
+      // viene fatto il reset dei Step Motor
       // e viene settato lo stato della scansione come terminata.
   
       if(intervalY * degreesY > 90){
         myStepperY.step(-stepY * intervalY);
+        myStepperX.step(-stepX * intervalX);
         finish = true;
       }
     }else{
