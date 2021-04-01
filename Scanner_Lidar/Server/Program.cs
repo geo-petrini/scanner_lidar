@@ -10,16 +10,23 @@ namespace Server_Lidar
 {
     class Program
     {
-        private static int SERVER_PORT;
+        private const int SERVER_PORT = 12345;
         private static Logger myLogger = LogManager.GetCurrentClassLogger();
         private const int BAUD_RATE = 115200;
+        private const int MAX_DATA_SCANNED = 900;
         static void Main(string[] args)
         {
-            Console.Title = "Server";
-            SERVER_PORT = 12345;
-            //115200
+            Console.Title = "Server_Lidar";
+            Server server = null;
             string comPort = DetectArduino();
-            Server server = new Server(SERVER_PORT, comPort, BAUD_RATE);
+            if(!comPort.Equals("NO PORT FOUND"))
+            {
+                server = new Server(SERVER_PORT, comPort, BAUD_RATE, MAX_DATA_SCANNED);
+            }
+            else
+            {
+                server = new Server(SERVER_PORT);
+            }
             try
             {
                 server.Start();
