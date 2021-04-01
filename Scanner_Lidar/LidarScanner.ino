@@ -9,7 +9,7 @@ Stepper myStepperY(stepsPerRevolution, 6,4,5,3); // Definizione dello Stepper Mo
 TFmini tfmini; // Definizione dello scanner LIDAR utilizzato dal programma.
 
 const int degreesX = 6; // Il numero di gradi eseguiti dal Stepper Motor dell'asse X, per step.
-const int degreesY = 6; // Il numero di gradi eseguiti dal Stepper Motor dell'asse Y, per step.
+const int degreesY = 3; // Il numero di gradi eseguiti dal Stepper Motor dell'asse Y, per step.
 const double ratio = 5.625*1.0; // Il rapporto tra 360° e stepsPerRevolution (hardcoded per eccesso di approssimazione da parte di Arduino).
 
 bool clockwise = true; // Lo stato che stabilisce il senso in cui ruota lo Stepper Motor dell'asse X (true = senso orario; false = senso antiorario).
