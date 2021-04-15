@@ -4,7 +4,12 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    //Script di aiuto per il movimento con il mouse: https://answers.unity.com/questions/1344322/free-mouse-rotating-camera.html
+    /// <summary>
+    /// @Author Veljko Markovic
+    /// @Version 01.04.2021
+    /// 
+    /// Script di aiuto per il movimento con il mouse: https://answers.unity.com/questions/1344322/free-mouse-rotating-camera.html
+    /// </summary>
 
     // Rotazione della camera
     private Vector3 rotation;

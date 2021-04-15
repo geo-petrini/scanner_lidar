@@ -5,6 +5,11 @@ using UnityEngine;
 
 public class PointController : MonoBehaviour
 {
+    /// <summary>
+    /// @Author Veljko Markovic
+    /// @Version 15.04.2021
+    /// </summary>
+
     // Lista che contiene tutti i punti che vengono renderizzati
     private List<GameObject> points;
 

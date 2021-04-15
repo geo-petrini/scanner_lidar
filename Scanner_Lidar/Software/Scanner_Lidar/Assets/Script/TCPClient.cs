@@ -11,6 +11,9 @@ using UnityEngine.UI;
 public class TCPClient : MonoBehaviour
 {
     /// <summary>
+    /// @Author Veljko Markovic
+    /// @Version 15.04.2021
+    /// 
     /// Questo codice è stato riadattato da questo link: https://gist.github.com/danielbierwirth/0636650b005834204cb19ef5ae6ccedb#file-tcptestclient-cs-L26
     /// Inserirò i commenti anche come dimostrazione di aver compreso quello che ho letto (Veljko)
     /// </summary>
@@ -169,6 +172,7 @@ public class TCPClient : MonoBehaviour
         pointsText.text = "Points: " + pointController.GetIndexOfLastPoint().ToString();
     }
 
+    // Fa partire la Thread di lettura
     private void Connect()
     {
         try
@@ -323,20 +327,20 @@ public class TCPClient : MonoBehaviour
     // Quando viene cliccato il bottone "Receive", al Server verrà inviata una richiesta per ricevere i dati con l'intervallo stabilito dall'utente
     public void OnReceiveClick()
     {
-        if (!string.IsNullOrEmpty(intervalInputField.text))
-        {
-            receiveButton.gameObject.SetActive(false);
-            stopButton.gameObject.SetActive(true);
+        receiveButton.gameObject.SetActive(false);
+        stopButton.gameObject.SetActive(true);
 
-            clientMessage = "Int:" + pointController.GetIndexOfLastPoint() + "," + intervalInputField.text;
-            SendMessage();
-
-            DisplayInfo("Request to the Server sent, I'm getting my points...", Color.yellow);
-        }
-        else
+        clientMessage = "Int:" + pointController.GetIndexOfLastPoint() + ",";
+        if(string.IsNullOrEmpty(intervalInputField.text))
         {
-            DisplayInfo("Enter an interval value!", Color.red);
+            clientMessage += "*";
+        }else
+        {
+            clientMessage += intervalInputField.text;
         }
+        SendMessage();
+
+        DisplayInfo("Request to the Server sent, I'm getting my points...", Color.yellow);
     }
 
     // Quando viene cliccato il bottone "Stop", al Server verrà inviato un messaggio che gli indicherà di smettere di inviare punti

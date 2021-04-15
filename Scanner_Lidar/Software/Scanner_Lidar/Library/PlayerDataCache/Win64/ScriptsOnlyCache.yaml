@@ -62,11 +62,11 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 3084}
     - Class: 114
-      Script: {instanceID: 3332}
+      Script: {instanceID: 3268}
     - Class: 114
-      Script: {instanceID: 3466}
+      Script: {instanceID: 3334}
     - Class: 114
-      Script: {instanceID: 16630}
+      Script: {instanceID: 3468}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -460,6 +460,12 @@ ScriptsOnlyBuild:
     className: TestResultRendererCallback
   - hash:
       serializedVersion: 2
+      Hash: 8be5a58aa651153197d52d97ad38ed13
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: WorldAxis
+  - hash:
+      serializedVersion: 2
       Hash: 748dd2a2a28da4e618912da5ac45684b
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.EventSystems
@@ -530,12 +536,6 @@ ScriptsOnlyBuild:
     assemblyName: Unity.TextMeshPro.dll
     namespaceName: TMPro
     className: TextContainer
-  - hash:
-      serializedVersion: 2
-      Hash: 8be5a58aa651153197d52d97ad38ed13
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: WorldAxis
   platform: 19
   scenePathNames:
   - Assets/Scenes/LidarScene.unity

@@ -4,7 +4,12 @@ using UnityEngine;
 
 public class WorldAxis : MonoBehaviour
 {
-    // Fonte: https://docs.unity3d.com/ScriptReference/GL.html
+    /// <summary>
+    /// @Author Veljko Markovic
+    /// @Version 01.04.2021
+    /// 
+    /// Fonte: https://docs.unity3d.com/ScriptReference/GL.html
+    /// </summary>
 
     // When added to an object, draws colored rays from the
     // transform position.
