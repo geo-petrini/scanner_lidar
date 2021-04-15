@@ -1,3 +1,3 @@
-# Scanner_Lidar | Mod 306
+# Scanner_Lidar
 ##### Matteo Lupica, Daniele Cereghetti, Isaac Gragasin, Veljko Markovic
-### Centro Professionale Trevano
+### Centro Professionale Trevano, Mod 306
