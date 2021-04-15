@@ -90,6 +90,7 @@ void loop() {
         myStepperY.step(-stepY * intervalY);
         myStepperX.step(-stepX * intervalX);
         finish = true;
+        Serial.write("<EOF>");
       }
     }else{
       delay(10);
