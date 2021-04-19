@@ -20,16 +20,14 @@ namespace Server_Lidar.Models
     class Server
     {
         #region =================== costanti ===================
-        private const string PORT_NAME = "COM4";
         #endregion
 
         #region =================== membri statici =============
         private static Logger myLogger = LogManager.GetCurrentClassLogger();
-        private static Thread send;
         private static bool canSend = true;
         private static bool isSending = false;
         private static TcpListener tcpListener;
-        private static List<Vector3> vector3s =new List<Vector3>();
+        private static List<Vector3> vector3s = new List<Vector3>();
         private static CancellationTokenSource ts;
         private static CancellationToken end;
         #endregion
@@ -115,7 +113,7 @@ namespace Server_Lidar.Models
                     {
                         // Avvio la connessione seriale tramite la porta COM
                         arduino.Open();
-                        while (vector3s.Count < 1785)
+                        while (true)
                         {
                             if (end.IsCancellationRequested)
                             {
@@ -138,9 +136,24 @@ namespace Server_Lidar.Models
                                     myLogger.Debug(reader);
                                     myLogger.Debug(String.Format("Index of vector: {0}", cnt));
                                     Vector3 v3 = CreateVector(reader, cnt);
-                                    vector3s.Add(v3);
-                                    myLogger.Info(string.Format("Scanned point in => (x:{0}, y:{1}, z:{2})", v3.X, v3.Y, v3.Z));
-                                    cnt++;
+                                    if (v3 != null)
+                                    {
+                                        vector3s.Add(v3);
+                                        myLogger.Info(string.Format("Scanned point " + cnt + " in => (x:{0}, y:{1}, z:{2})", v3.X, v3.Y, v3.Z));
+                                        cnt++;
+                                    }
+                                    else
+                                    {
+                                        if (reader.Contains("CIAO"))
+                                        {
+                                            arduino.Write("OK");
+                                            myLogger.Fatal("RESET DATA REQUEST TO ARDUINO");
+                                        }else if (reader.Contains("<EOF>"))
+                                        {
+                                            myLogger.Info("Arduino send all data");
+                                            ts.Cancel();
+                                        }
+                                    }     
                                 }
                                 arduino.BaseStream.Flush();
                             }
@@ -192,7 +205,7 @@ namespace Server_Lidar.Models
                     myLogger.Error(e.Message);
                 }
             }
-            
+
         }
         /// <summary>
         /// Imposta una nuova connessione 
@@ -210,17 +223,42 @@ namespace Server_Lidar.Models
         private Vector3 CreateVector(string data, int id)
         {
             string[] coords = data.Split(',');
-            float horizontal = float.Parse(coords[0]);
-            float vertical = float.Parse(coords[1]);
-            float intensity = float.Parse(coords[2]);
+            float horizontal;
+            float vertical;
+            float intensity;
+            if(float.TryParse(coords[0], out horizontal))
+            {
+                horizontal = float.Parse(coords[0]);
+            }
+            else
+            {
+                return null;
+            }
+            if (float.TryParse(coords[1], out vertical))
+            {
+                vertical = float.Parse(coords[1]);
+            }
+            else
+            {
+                return null;
+            }
+            if (float.TryParse(coords[2], out intensity))
+            {
+                intensity = float.Parse(coords[2]);
+            }
+            else
+            {
+                return null;
+            }
             myLogger.Debug(String.Format("Horizontal {0}, Vertical {1}, Intensity {2}", horizontal, vertical, intensity));
             return new Vector3
             {
-                X = (float)(intensity * Math.Cos(vertical) * Math.Cos(horizontal)),
-                Y = (float)(intensity * Math.Cos(vertical) * Math.Sin(horizontal)),
-                Z = (float)(intensity * Math.Sin(vertical)),
+                X = (float)(intensity * Math.Round(Math.Cos(Math.PI * vertical / 180.0), 6) * Math.Round(Math.Cos(Math.PI * horizontal / 180.0),6)),
+                Y = (float)(intensity * Math.Round(Math.Cos(Math.PI * horizontal / 180.0),6) * Math.Round(Math.Sin(Math.PI * vertical / 180.0),6)),
+                Z = (float)(intensity * Math.Round(Math.Sin(Math.PI * vertical / 180.0), 6)), 
                 Id = id
             };
+
         }
         /// <summary>
         /// Invia i dati al client
@@ -245,7 +283,6 @@ namespace Server_Lidar.Models
                     myLogger.Debug(message);
                 }
                 fake = message;
-                Thread.Sleep(63);
             }
             // Invia il cancelletto solo quando il client richiede più dati di quelli disponibili
             if (isSending)
@@ -266,6 +303,7 @@ namespace Server_Lidar.Models
             IPHostEntry host = Dns.GetHostEntry(Dns.GetHostName());
             tcpListener.Start();
             myLogger.Info(String.Format("The server {0} is online at {1} listening ", host.HostName, tcpListener.LocalEndpoint));
+            // Inizio struttura con database sqlite non del tutto implementata
             var database = Host.CreateDefaultBuilder()
                   .ConfigureServices((context, services) =>
                   {
@@ -290,7 +328,7 @@ namespace Server_Lidar.Models
         {
             ts.Cancel();
             tcpListener.Stop();
-            myLogger.Warn("The server is shutting down");
+            myLogger.Fatal("The server is shutting down");
         }
         /// <summary>
         /// Gestisce il multi-threading del server, 
@@ -305,6 +343,7 @@ namespace Server_Lidar.Models
             newConnection();
             var stream = client.GetStream();
             int length;
+            MyThread mT = new MyThread();
             // leggo i dati che arrivano sullo stream e gli inserisco in un array di byte.
             while ((length = stream.Read(bytes, 0, bytes.Length)) != 0)
             {
@@ -323,15 +362,26 @@ namespace Server_Lidar.Models
                 string header = message[0];
                 if (header.Equals("Int"))
                 {
+                    if (!mT.IsSending)
+                    {
+                        mT.IsSending = true;
+                    }
                     //0,1
                     string[] content = message[1].Split(',');
                     int min = int.Parse(content[0]);
-                    int max = int.Parse(content[1]);
-                    send = new Thread(() => SendToUnity(client, min, max));
+                    int max;
+                    if (content[1].Equals("*"))
+                    {
+                        max = vector3s.Count - 1;
+                    }
+                    else
+                    {
+                        max = int.Parse(content[1]);
+                    }
                     if (canSend)
                     {
-                        isSending = true;
-                        send.Start();
+                        object args = new object[5] { myLogger, client, vector3s, min, max };
+                        (new Thread(new ParameterizedThreadStart(mT.SendToUnity))).Start(args);
                         myLogger.Info(String.Format("The server sends data to client {0}", client.Client.RemoteEndPoint));
                     }
                 }
@@ -340,7 +390,7 @@ namespace Server_Lidar.Models
                     string command = message[1];
                     if (command.Equals("Stop"))
                     {
-                        isSending = false;
+                        mT.Stop();
                         myLogger.Info(String.Format("The server stops sending data to client {0}", client.Client.RemoteEndPoint));
                     }
                 }
