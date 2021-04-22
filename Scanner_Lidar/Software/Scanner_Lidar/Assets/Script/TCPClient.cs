@@ -30,6 +30,21 @@ public class TCPClient : MonoBehaviour
     // Bottone che dice al Server di non inviare i dati al Client
     public Button stopButton;
 
+    // Percorso del file di configurazione del Server
+    private string destination;
+
+    // IP del Server
+    private string serverIp;
+
+    // Porta del Server
+    private int serverPort;
+
+    // Porta del Server di default
+    public const int DEFAULT_PORT = 12345;
+
+    // IP di localhost
+    public const string LOCALHOST = "127.0.0.1";
+
     // Oggetto che userò per connettermi al server tramite il protocllo TCP
     private TcpClient connection;
 
@@ -83,6 +98,9 @@ public class TCPClient : MonoBehaviour
 
     void Start()
     {
+        // Imposto il percorso del file di configurazione del Server
+        destination = Application.persistentDataPath + "/server.config";
+
         // Ottengo lo script Point Controller dalla Main Camera
         pointController = GameObject.Find("Main Camera").GetComponent<PointController>();
 
@@ -201,7 +219,10 @@ public class TCPClient : MonoBehaviour
             DisplayInfo("Attempting to connect to the Server, please wait...", Color.white);
             Debug.Log("Attempting to connect to the Server, please wait...");
 
-            connection = new TcpClient("10.20.4.185", 12345);
+            // Imposto l'IP e la porta del Server
+            SetServerInfo();
+
+            connection = new TcpClient(serverIp, serverPort);
 
             //Debug.Log("Tentativo di connessione al Server terminato con successo!");
             Debug.Log("Connection to the Server succesfully established!");
@@ -234,6 +255,11 @@ public class TCPClient : MonoBehaviour
                 }
             }
         }
+        catch(InvalidDataException e)
+        {
+            DisplayInfo(e.Message, Color.red);
+            Debug.Log(e.Message);
+        }
         catch (SocketException)
         {
             DisplayInfo("Unable to establish a connection with the Server", Color.red);
@@ -251,6 +277,42 @@ public class TCPClient : MonoBehaviour
             Debug.Log("Connection with the Server interrupted");
         }
         returnToStartupDisplay = true;
+    }
+
+    // Legge i valori dal file di configurazione e imposta le variabili su quei valori
+    private void SetServerInfo()
+    {
+        // Controllo se esiste il file di configurazione
+        if (File.Exists(destination))
+        {
+            // Leggo il contenuto del file
+            var file = File.ReadAllText(destination);
+            // Estraggo IP e porta
+            string[] serverInfo = file.Split(':');
+            // Controllo del formato
+            if (serverInfo.Length == 2)
+            {
+                // Controllo se la porta è un numero intero
+                if(int.TryParse(serverInfo[1], out serverPort))
+                {
+                    if(serverPort < 0 || serverPort > 65535)
+                    {
+                        serverPort = DEFAULT_PORT;
+                    }
+                    serverIp = serverInfo[0];
+                }else
+                {
+                    throw new InvalidDataException("The port format is incorrect! Please insert an Integer value");
+                }
+            }else
+            {
+                throw new InvalidDataException("Configuration file incorrect! The format is: <server_ip>:<server_port>");
+            }
+        }
+        else
+        {
+            throw new InvalidDataException("Cannot find configuration file! " + destination);
+        }
     }
 
     /// <summary>

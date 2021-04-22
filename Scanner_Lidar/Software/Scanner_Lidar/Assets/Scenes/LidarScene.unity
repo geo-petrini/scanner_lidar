@@ -1507,6 +1507,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rotationSpeed: 3e-26
+  sensitivity: 6
+  maxYAngle: 80
 --- !u!114 &963194230
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2016,8 +2018,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 335, y: 30}
-  m_SizeDelta: {x: 640, y: 30}
+  m_AnchoredPosition: {x: 600, y: 30}
+  m_SizeDelta: {x: 1110, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1272604762
 MonoBehaviour:
