@@ -23,17 +23,44 @@ namespace Server_Lidar.Models
         #endregion
 
         #region =================== membri statici =============
+        /// <summary>
+        /// Indica il logger utilizzato per avere traccia di quello che accade.
+        /// </summary>
         private static Logger myLogger = LogManager.GetCurrentClassLogger();
+        /// <summary>
+        /// Indica se il server è abilitato a mandare i dati ai client.
+        /// </summary>
         private static bool canSend = true;
+        /// <summary>
+        /// Indica se il server sta mandando i dati.
+        /// </summary>
         private static bool isSending = false;
+        /// <summary>
+        /// Indica il socket utilizzato per effetuare il binding della porta da parte del server.
+        /// </summary>
         private static TcpListener tcpListener;
+        /// <summary>
+        /// Indica la lista dei punti che vengono scansionati
+        /// </summary>
         private static List<Vector3> vector3s = new List<Vector3>();
-        private static CancellationTokenSource ts;
-        private static CancellationToken end;
+        /// <summary>
+        /// Indica la sorgente del token.
+        /// </summary>
+        private static CancellationTokenSource ts = new CancellationTokenSource();
+        /// <summary>
+        /// Indica il token per poter cancellare una determinata task.
+        /// </summary>
+        private static CancellationToken end = ts.Token;
         #endregion
 
         #region =================== membri & proprietà =========
+        /// <summary>
+        /// Indica la porta seriale utilizzata dal computer per comunicare con arduino.
+        /// </summary>
         private SerialPort arduino;
+        /// <summary>
+        /// Indica la porta del server.
+        /// </summary>
         private int serverPort;
         
         public int ServerPort
@@ -58,18 +85,16 @@ namespace Server_Lidar.Models
         #endregion
 
         #region =================== costruttori ================
-        public Server(int port)
-        {
-            ServerPort = port;
-            ts = new CancellationTokenSource();
-            end = ts.Token;
-        }
-        public Server(int serverPort,string serialPort,int baudRate, int max_points)
+        /// <summary>
+        /// Costruttore per inizializzare il server.
+        /// </summary>
+        /// <param name="serverPort">Indica la porta del server</param>
+        /// <param name="serialPort">Indica la porta seriale (COM)</param>
+        /// <param name="baudRate">Indica la velocità dei dati in bit al secondo.</param>
+        public Server(int serverPort,string serialPort,int baudRate)
         {
             ServerPort = ServerPort;
             arduino = new SerialPort(serialPort, baudRate);
-            ts = new CancellationTokenSource();
-            end = ts.Token;
         }
         #endregion
 
@@ -107,6 +132,7 @@ namespace Server_Lidar.Models
             int cnt = 0;
             if (arduino != null)
             {
+                // Avvio un'attività in parallelo al processo principale
                 Task.Factory.StartNew(() =>
                 {
                     try
@@ -148,7 +174,10 @@ namespace Server_Lidar.Models
                                         {
                                             arduino.Write("OK");
                                             myLogger.Fatal("RESET DATA REQUEST TO ARDUINO");
-                                        }else if (reader.Contains("<EOF>"))
+                                            vector3s.Clear();
+                                            cnt = 0;
+                                        }
+                                        else if (reader.Contains("<EOF>"))
                                         {
                                             myLogger.Info("Arduino send all data");
                                             ts.Cancel();
@@ -170,42 +199,6 @@ namespace Server_Lidar.Models
                     }
                 }, end);
             }
-        }
-        /// <summary> 	
-        /// Invia un messaggio al client usando la connessione tramite socket.
-        /// </summary> 	
-        private static void SendMessage(string serverMessage, TcpClient connectedClient)
-        {
-            if (connectedClient == null)
-            {
-                return;
-            }
-            if (connectedClient.Connected)
-            {
-                try
-                {
-                    // ottengo l'oggetto stream per scrivere.		
-                    NetworkStream stream = connectedClient.GetStream();
-                    if (stream.CanWrite)
-                    {
-                        // Converto la stringa in un array di byte.                 
-                        byte[] serverMessageAsByteArray = Encoding.ASCII.GetBytes(serverMessage);
-                        // Scrivo l'array di byte sul socketConnection stream.               
-                        stream.Write(serverMessageAsByteArray, 0, serverMessageAsByteArray.Length);
-                        myLogger.Info(String.Format("The server send a message to client {0}", connectedClient.Client.RemoteEndPoint));
-                    }
-                    else
-                    {
-                        stream.Close();
-                    }
-                }
-                catch (Exception e)
-                {
-                    isSending = false;
-                    myLogger.Error(e.Message);
-                }
-            }
-
         }
         /// <summary>
         /// Imposta una nuova connessione 
@@ -259,38 +252,6 @@ namespace Server_Lidar.Models
                 Id = id
             };
 
-        }
-        /// <summary>
-        /// Invia i dati al client
-        /// </summary>
-        /// <param name="value">Indica il valore iniziale e quanti dati inviare</param>
-        private void SendToUnity(TcpClient client, params int[] value)
-        {
-            string message = String.Empty;
-            string fake = String.Empty;
-            int clientIndex = value[0];
-            int n_pallini = value[1];
-            for (int i = clientIndex; i < clientIndex + n_pallini && i < vector3s.Count - 1; i++)
-            {
-                if (!isSending)
-                {
-                    break;
-                }
-                message = String.Format("{0},{1},{2}", vector3s[i].X, vector3s[i].Y, vector3s[i].Z);
-                if (!message.Equals(fake))
-                {
-                    SendMessage(message, client);
-                    myLogger.Debug(message);
-                }
-                fake = message;
-            }
-            // Invia il cancelletto solo quando il client richiede più dati di quelli disponibili
-            if (isSending)
-            {
-                message = String.Format("#,#,#");
-                SendMessage(message, client);
-                myLogger.Debug(message);
-            }
         }
         #endregion
 
@@ -397,19 +358,12 @@ namespace Server_Lidar.Models
                 else if (header.Contains("GET / HTTP/1.1"))
                 {
                     TcpClient web = client;
-                    string path = Path.Combine(AppContext.BaseDirectory, @"..\..\..\Request\web.html");
-                    string page = File.ReadAllText(path);
-                    var utf8 = new UTF8Encoding();
-                    web.GetStream().Write(utf8.GetBytes("HTTP/1.1 \r\n 200 OK"));
-                    web.GetStream().Write(utf8.GetBytes("ContentType: text/html\r\n"));
-                    web.GetStream().Write(utf8.GetBytes("\r\n"));
-                    web.GetStream().Write(utf8.GetBytes(page));
-                    web.GetStream().Write(utf8.GetBytes("\r\n\r\n"));
-                    web.GetStream().Flush();
+                    web.Close();
+                    return;
                 }
                 else
                 {
-                    myLogger.Warn("No header element passed");
+                    myLogger.Warn("No protocol supported");
                 }
             }
             myLogger.Warn(String.Format("The client {0} disconnected", client.Client.RemoteEndPoint));
