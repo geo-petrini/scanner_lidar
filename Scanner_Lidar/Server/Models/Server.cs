@@ -200,42 +200,6 @@ namespace Server_Lidar.Models
                 }, end);
             }
         }
-        /// <summary> 	
-        /// Invia un messaggio al client usando la connessione tramite socket.
-        /// </summary> 	
-        private static void SendMessage(string serverMessage, TcpClient connectedClient)
-        {
-            if (connectedClient == null)
-            {
-                return;
-            }
-            if (connectedClient.Connected)
-            {
-                try
-                {
-                    // ottengo l'oggetto stream per scrivere.		
-                    NetworkStream stream = connectedClient.GetStream();
-                    if (stream.CanWrite)
-                    {
-                        // Converto la stringa in un array di byte.                 
-                        byte[] serverMessageAsByteArray = Encoding.ASCII.GetBytes(serverMessage);
-                        // Scrivo l'array di byte sul socketConnection stream.               
-                        stream.Write(serverMessageAsByteArray, 0, serverMessageAsByteArray.Length);
-                        myLogger.Info(String.Format("The server send a message to client {0}", connectedClient.Client.RemoteEndPoint));
-                    }
-                    else
-                    {
-                        stream.Close();
-                    }
-                }
-                catch (Exception e)
-                {
-                    isSending = false;
-                    myLogger.Error(e.Message);
-                }
-            }
-
-        }
         /// <summary>
         /// Imposta una nuova connessione 
         /// </summary>
@@ -288,38 +252,6 @@ namespace Server_Lidar.Models
                 Id = id
             };
 
-        }
-        /// <summary>
-        /// Invia i dati al client
-        /// </summary>
-        /// <param name="value">Indica il valore iniziale e quanti dati inviare</param>
-        private void SendToUnity(TcpClient client, params int[] value)
-        {
-            string message = String.Empty;
-            string fake = String.Empty;
-            int clientIndex = value[0];
-            int n_pallini = value[1];
-            for (int i = clientIndex; i < clientIndex + n_pallini && i < vector3s.Count - 1; i++)
-            {
-                if (!isSending)
-                {
-                    break;
-                }
-                message = String.Format("{0},{1},{2}", vector3s[i].X, vector3s[i].Y, vector3s[i].Z);
-                if (!message.Equals(fake))
-                {
-                    SendMessage(message, client);
-                    myLogger.Debug(message);
-                }
-                fake = message;
-            }
-            // Invia il cancelletto solo quando il client richiede più dati di quelli disponibili
-            if (isSending)
-            {
-                message = String.Format("#,#,#");
-                SendMessage(message, client);
-                myLogger.Debug(message);
-            }
         }
         #endregion
 
