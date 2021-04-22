@@ -16,7 +16,7 @@ capacità computazionali di un PC così da poter rendereizzare i dati scansionat
 #### Struttura:
 - Codici sorgente:
 
-- [Applicativo]
+- [Applicativo](Applicativi)
 
 - [Documentazione](Documentazione/)
 
