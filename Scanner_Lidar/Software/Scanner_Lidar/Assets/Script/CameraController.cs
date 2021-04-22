@@ -58,16 +58,16 @@ public class CameraController : MonoBehaviour
             }
         }
 
-        // Se il pulsante premuto è LeftShift, il movimento della camera sarà dimezzato
+        // Se il pulsante premuto è LeftShift, il movimento della camera sarà raddoppiato
         if (Input.GetKeyDown(KeyCode.LeftShift))
         {
-            movementSpeed /= 2;
+            movementSpeed *= 2;
         }
 
         // Se il pulsante premuto è LeftShift, il movimento della camera tornerà normale
         if (Input.GetKeyUp(KeyCode.LeftShift))
         {
-            movementSpeed *= 2;
+            movementSpeed /= 2;
         }
 
         // Se il pulsante premuto è W, la camera si muove avanti
