@@ -14,7 +14,7 @@ capacità computazionali di un PC così da poter rendereizzare i dati scansionat
 [Mandato](Documentazione/QdC_SecondoSemestre(GP)_ScannerLidar.pdf) 
 
 #### Struttura:
-- Codici sorgente:
+- [Codici sorgente](Scanner_Lidar/)
 
 - [Applicativo](Applicativi)
 
