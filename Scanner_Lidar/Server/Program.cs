@@ -50,7 +50,7 @@ namespace Server_Lidar
                     server.Stop();
                 }
             }
-            Console.WriteLine("Premi un pulsante per finire...");
+            Console.WriteLine("Press any button to end..");
             Console.ReadLine();
         }
         /// <summary>
@@ -125,7 +125,7 @@ namespace Server_Lidar
                     serial.Close();
                     if(n_times_badBaudrate >= 5)
                     {
-                        myLogger.Fatal("Baudrate is not configured correctly, impossible comunicate with arduino.");
+                        myLogger.Fatal("Baudrate is not configured correctly, impossible to communicate with Arduino.");
                         return "NO PORT FOUND";
                     }
                 }
