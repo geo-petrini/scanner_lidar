@@ -33,4 +33,4 @@ STARTING THE APPLICATION
 If all of the pre-requirements are met, simply 
 run the Start.bat file to start the application.
 
-Once the Start.bat file has started, allow the firewall to grant access permissions to the server .
+Once the Start.bat file has started, allow the firewall to grant access permissions to the server.
