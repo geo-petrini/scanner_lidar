@@ -32,17 +32,13 @@ namespace Server_Lidar.Models
         /// </summary>
         private static bool canSend = true;
         /// <summary>
-        /// Indica se il server sta mandando i dati.
-        /// </summary>
-        private static bool isSending = false;
-        /// <summary>
         /// Indica il socket utilizzato per effetuare il binding della porta da parte del server.
         /// </summary>
         private static TcpListener tcpListener;
         /// <summary>
         /// Indica la lista dei punti che vengono scansionati
         /// </summary>
-        private static List<Vector3> vector3s = new List<Vector3>();
+        private static volatile List<Vector3> vector3s = new List<Vector3>();
         /// <summary>
         /// Indica la sorgente del token.
         /// </summary>
@@ -51,6 +47,10 @@ namespace Server_Lidar.Models
         /// Indica il token per poter cancellare una determinata task.
         /// </summary>
         private static CancellationToken end = ts.Token;
+        /// <summary>
+        /// Indica il tempo del primo gennaio 1970 per poter calcolare il currenttime
+        /// </summary>
+        private static DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         #endregion
 
         #region =================== membri & proprietà =========
@@ -71,12 +71,13 @@ namespace Server_Lidar.Models
             }
             set 
             {
-                if(value > 1024)
+                if(value >= 1024 && value <= 65535)
                 {
                     serverPort = value;
                 }
                 else
                 {
+                    myLogger.Warn("The port value in: Server_Lidar.dll.config is not in the range of [1024,65535], default settings loaded -> port = 12345");
                     serverPort = 12345;
                 }
             }
@@ -93,7 +94,7 @@ namespace Server_Lidar.Models
         /// <param name="baudRate">Indica la velocità dei dati in bit al secondo.</param>
         public Server(int serverPort,string serialPort,int baudRate)
         {
-            ServerPort = ServerPort;
+            ServerPort = serverPort;
             arduino = new SerialPort(serialPort, baudRate);
         }
         #endregion
@@ -139,11 +140,14 @@ namespace Server_Lidar.Models
                     {
                         // Avvio la connessione seriale tramite la porta COM
                         arduino.Open();
+                        long start = (long)(DateTime.UtcNow - dateTime).Seconds;
                         while (true)
                         {
                             if (end.IsCancellationRequested)
                             {
+                                long end = (long)(DateTime.UtcNow - dateTime).Seconds;
                                 myLogger.Debug("task canceled");
+                                myLogger.Info(String.Format("Execution time for data scanning: ~{0} seconds", end - start));
                                 break;
                             }
                             try
@@ -188,13 +192,13 @@ namespace Server_Lidar.Models
                             }
                             catch (InvalidOperationException ioe)
                             {
-                                myLogger.Error(ioe.StackTrace);
+                                myLogger.Error(ioe.Message);
                             }
                         }
                     }
                     catch (Exception e)
                     {
-                        myLogger.Error(e.StackTrace);
+                        myLogger.Error(e.Message);
                         return;
                     }
                 }, end);
@@ -206,7 +210,6 @@ namespace Server_Lidar.Models
         private void newConnection()
         {
             canSend = true;
-            isSending = false;
         }
         /// <summary>
         /// Crea un vettore tramite 2 angoli e l'intensità
@@ -247,7 +250,7 @@ namespace Server_Lidar.Models
             return new Vector3
             {
                 X = (float)(intensity * Math.Round(Math.Cos(Math.PI * vertical / 180.0), 6) * Math.Round(Math.Cos(Math.PI * horizontal / 180.0),6)),
-                Y = (float)(intensity * Math.Round(Math.Cos(Math.PI * horizontal / 180.0),6) * Math.Round(Math.Sin(Math.PI * vertical / 180.0),6)),
+                Y = (float)(intensity * Math.Round(Math.Cos(Math.PI * vertical / 180.0),6) * Math.Round(Math.Sin(Math.PI * horizontal / 180.0),6)),
                 Z = (float)(intensity * Math.Round(Math.Sin(Math.PI * vertical / 180.0), 6)), 
                 Id = id
             };

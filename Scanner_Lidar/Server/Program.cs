@@ -31,12 +31,12 @@ namespace Server_Lidar
         static void Main(string[] args)
         {
             Init();
-            Console.Title = String.Format("Server_Lidar {0}:{1}", Dns.GetHostEntry(Dns.GetHostName()).HostName,serverPort);
             comPort = DetectArduino();
             Server server = null;
             if(!comPort.Equals("NO PORT FOUND"))
             {
                 server = new Server(serverPort, comPort, baudRate);
+                Console.Title = String.Format("Server_Lidar {0}:{1}", Dns.GetHostEntry(Dns.GetHostName()).HostName, server.ServerPort);
                 try
                 {
                     server.Start();
@@ -58,8 +58,24 @@ namespace Server_Lidar
         /// </summary>
         private static void Init()
         {
-            baudRate = int.Parse(ConfigurationManager.AppSettings.Get("BaudRate"));
-            serverPort = int.Parse(ConfigurationManager.AppSettings.Get("ServerPort"));
+            if (int.TryParse(ConfigurationManager.AppSettings.Get("BaudRate"), out baudRate))
+            {
+                baudRate = int.Parse(ConfigurationManager.AppSettings.Get("BaudRate"));
+            }
+            else
+            {
+                myLogger.Warn(String.Format("The baudrate is not configured correctly, value = {0}", baudRate));
+
+            }
+            if (int.TryParse(ConfigurationManager.AppSettings.Get("ServerPort"), out serverPort))
+            {
+                serverPort = int.Parse(ConfigurationManager.AppSettings.Get("ServerPort"));
+            }
+            else
+            {
+                myLogger.Warn(String.Format("The server port is not configured correctly, value = {0}", serverPort));
+
+            }
         }
 
         /// <summary>
@@ -70,6 +86,7 @@ namespace Server_Lidar
         /// <copyright>Matteo Lupica</copyright>
         public static string DetectArduino()
         {
+            int n_times_badBaudrate = 0;
             bool found = false;
             string[] availblePort = SerialPort.GetPortNames();
             List<string> ports = availblePort.OfType<string>().ToList();
@@ -104,6 +121,13 @@ namespace Server_Lidar
                 catch (Exception ioe)
                 {
                     myLogger.Error(ioe.Message);
+                    n_times_badBaudrate++;
+                    serial.Close();
+                    if(n_times_badBaudrate >= 5)
+                    {
+                        myLogger.Fatal("Baudrate is not configured correctly, impossible comunicate with arduino.");
+                        return "NO PORT FOUND";
+                    }
                 }
             }
             serial.Write("OK");
