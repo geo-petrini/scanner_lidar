@@ -20,6 +20,6 @@ capacità computazionali di un PC così da poter rendereizzare i dati scansionat
 
 - [Documentazione](Documentazione/)
 
-- [Gantt](Pianificazione/)
+- [Gantt](Pianificazione/Gantt_Scanner_Lidar_image.png)
 
 - [Diari di lavoro](Diario)
