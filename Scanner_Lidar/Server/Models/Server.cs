@@ -146,8 +146,8 @@ namespace Server_Lidar.Models
                             if (end.IsCancellationRequested)
                             {
                                 long end = (long)(DateTime.UtcNow - dateTime).Seconds;
-                                myLogger.Debug("task canceled");
-                                myLogger.Info(String.Format("Execution time for data scanning: ~{0} seconds", end - start));
+                                myLogger.Debug("Task cancelled");
+                                myLogger.Info(String.Format("Execution time of data scan: ~{0} seconds", end - start));
                                 break;
                             }
                             try
@@ -183,7 +183,7 @@ namespace Server_Lidar.Models
                                         }
                                         else if (reader.Contains("<EOF>"))
                                         {
-                                            myLogger.Info("Arduino send all data");
+                                            myLogger.Info("Arduino sent all data");
                                             ts.Cancel();
                                         }
                                     }     
@@ -266,7 +266,7 @@ namespace Server_Lidar.Models
             // Conosco l'host del server.
             IPHostEntry host = Dns.GetHostEntry(Dns.GetHostName());
             tcpListener.Start();
-            myLogger.Info(String.Format("The server {0} is online at {1} listening ", host.HostName, tcpListener.LocalEndpoint));
+            myLogger.Info(String.Format("The server {0} is online listening on {1} ", host.HostName, tcpListener.LocalEndpoint));
             // Inizio struttura con database sqlite non del tutto implementata
             var database = Host.CreateDefaultBuilder()
                   .ConfigureServices((context, services) =>
@@ -346,7 +346,7 @@ namespace Server_Lidar.Models
                     {
                         object args = new object[5] { myLogger, client, vector3s, min, max };
                         (new Thread(new ParameterizedThreadStart(mT.SendToUnity))).Start(args);
-                        myLogger.Info(String.Format("The server sends data to client {0}", client.Client.RemoteEndPoint));
+                        myLogger.Info(String.Format("The server sent data to client {0}", client.Client.RemoteEndPoint));
                     }
                 }
                 else if (header.Equals("Msg"))
@@ -355,7 +355,7 @@ namespace Server_Lidar.Models
                     if (command.Equals("Stop"))
                     {
                         mT.Stop();
-                        myLogger.Info(String.Format("The server stops sending data to client {0}", client.Client.RemoteEndPoint));
+                        myLogger.Info(String.Format("The server stopped sending data to client {0}", client.Client.RemoteEndPoint));
                     }
                 }
                 else if (header.Contains("GET / HTTP/1.1"))
