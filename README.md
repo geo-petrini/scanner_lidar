@@ -11,10 +11,10 @@ L'obbiettivo di questo progetto è voler realizzare uno scanner LIDAR combinando
 capacità computazionali di un PC così da poter rendereizzare i dati scansionati all'interno di un ambiente 3D.
 
 #### Mandato:
-[Mandato](/QdC_SecondoSemestre(GP)_ScannerLidar.docx) 
+[Mandato](Documentazione/QdC_SecondoSemestre(GP)_ScannerLidar.pdf) 
 
 #### Struttura:
-- [Codici sorgente](Scanner_Lidar/)
+- [Codici sorgente](Source_Code/)
 
 - [Applicativo](Applicativi)
 
