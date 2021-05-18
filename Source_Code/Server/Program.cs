@@ -83,7 +83,6 @@ namespace Server_Lidar
         /// Se sulla porta a cui si connette è collegato arduino, l'arduino comunica al pc di essere arduino e quindi di usare quella porta.
         /// </summary>
         /// <returns>La porta COM dove è collegato l'arduino</returns>
-        /// <copyright>Matteo Lupica</copyright>
         public static string DetectArduino()
         {
             int n_times_badBaudrate = 0;
