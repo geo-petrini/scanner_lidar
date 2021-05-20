@@ -2,7 +2,7 @@
 ##### Matteo Lupica, Daniele Cereghetti, Isaac Gragasin, Veljko Markovic
 ### Centro Professionale Trevano, Mod 306
 ## Info
-**Inizio:** 21.01.2021
+**Inizio:** 14.01.2021
 
 **Consegna:** 20.05.2021
 
