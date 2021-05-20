@@ -25,7 +25,7 @@ PRE-REQUIREMENTS
 
 .NET Core 3.1O must be installed on this machine before application startup. => https://dotnet.microsoft.com/download
 The Arduino must already be attached on this machine before application startup.
-Change values in Release/Server_Lidar.dll.config to fit the Arduino's baudrate and the server's listening port requirements.
+Change values in Scanner_Lidar/Server_Lidar.dll.config to fit the Arduino's baudrate and the server's listening port requirements.
 
 STARTING THE APPLICATION
 ----------------
