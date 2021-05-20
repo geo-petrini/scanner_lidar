@@ -22,7 +22,8 @@ is available on https://github.com/geo-petrini/scanner_lidar
 
 PRE-REQUIREMENTS
 ------------
-<veljko>
+Before the connection to the server, it is necessary to create a file named server.config
+and put it in the following folder: C:\Users
 STARTING THE APPLICATION
 ----------------
 <veljko>
